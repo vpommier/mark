@@ -34,10 +34,11 @@ type Flags struct {
 	BaseURL        string `docopt:"--base-url"`
 	Config         string `docopt:"--config"`
 	Ci             bool   `docopt:"--ci"`
+	Cloud          bool   `docopt:"--confluence-cloud"`
 }
 
 const (
-	version = "6.7"
+	version = "6.8"
 	usage   = `mark - a tool for updating Atlassian Confluence pages from markdown.
 
 Docs: https://github.com/kovetskiy/mark
@@ -72,6 +73,7 @@ Options:
   -c --config <path>   Use the specified configuration file.
                         [default: $HOME/.config/mark]
   --ci                 Runs on CI mode. It won't fail if files are not found.
+	--confluence-cloud   Use Confluence Cloud or Confluence hosted server authentication method.
   -h --help            Show this message.
   -v --version         Show version.
 `
@@ -116,7 +118,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	api := confluence.NewAPI(creds.BaseURL, creds.Username, creds.Password)
+	api := confluence.NewAPI(creds.BaseURL, creds.Username, creds.Password, flags.Cloud)
 
 	files, err := filepath.Glob(flags.FileGlobPatten)
 	if err != nil {
